@@ -14,9 +14,9 @@
       </ImageView>
    </center>
    <bottom>
-      <Label fx:id="deviceNameLabel" text="device_name" BorderPane.alignment="CENTER">
+      <Label fx:id="deviceNameLabel" text="device_name" textAlignment="CENTER" BorderPane.alignment="CENTER">
          <font>
-            <Font name="Calibri" size="22.0" />
+            <Font name="Roboto Light" size="23.0" />
          </font>
       </Label>
    </bottom>
