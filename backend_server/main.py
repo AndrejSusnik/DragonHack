@@ -1,13 +1,14 @@
 import hashlib
 from flask import Flask, jsonify
 from flask_restful import Resource, Api, reqparse
+from matplotlib.pyplot import cla
 import db
 import waitress
 import sys
 from flask_jwt_extended import create_access_token, jwt_required, JWTManager, get_jwt_identity
 import os
 from flask_cors import CORS
-import datetime
+import werkzeug
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -38,13 +39,18 @@ class Device(Resource):
             device = db.Device(name=args["name"], type=args["type"], network_ssid=args["network_ssid"], ip=args["ip"], id_user=args["id_user"])
             db.session.add(device)
             db.session.commit()
-            return {"message": "Device created successfully"}, 200
+            return {"id": device.id}, 200
         except:
             return {"message": "Invalid data"}, 400 
 
     @jwt_required()
     def delete(self, id):
-        pass
+        try:
+            db.Device.query.filter_by(id=id).delete()
+            db.session.commit()
+            return {"message": "Device deleted"}, 200
+        except:
+            return {"message": "Invalid data"}, 342
 
     @jwt_required()
     def put(self, id):
@@ -52,8 +58,8 @@ class Device(Resource):
 
 class DeviceList(Resource):
     @jwt_required()
-    def get(self):
-        return list(map(lambda x: x.as_dict(), db.session.query(db.Device).filter(db.Device.id_user == get_jwt_identity()["id"]).all()))
+    def get(self, id):
+        return {"devices":list(map(lambda x: x.as_dict(), db.session.query(db.Device).filter(db.Device.id_user == get_jwt_identity()["id"]).filter(db.Device.id != id).all()))}, 200
 
 authParser = reqparse.RequestParser()
 authParser.add_argument("password", required=True)
@@ -73,7 +79,9 @@ class Auth(Resource):
                 "utf-8"), user.salt.encode("utf-8"), 100000).hex()
             if key == user.password:
                 print(user.as_dict())
-                return {"token": create_access_token(identity=user.as_dict(), expires_delta=False)}, 200
+                token =  create_access_token(identity=user.as_dict(), expires_delta=False)
+                print(token)
+                return {"token": token}, 200
             else:
                 return {"error": "Incorrect username or password"}, 342
         except Exception as e:
@@ -102,9 +110,22 @@ class Auth(Resource):
         except Exception as e:
             return {"error": str(e)}, 342
 
+class File(Resource):
+    def __init__(self) -> None:
+        super().__init__()
+        self.parser = reqparse.RequestParser()
+        self.parser.add_argument("file",type=werkzeug.datastructures.FileStorage, location='files')
+
+    def post(self):
+        args = self.parser.parse_args()
+        file = args.get("file")
+        print(file)
+        pass
+
 api.add_resource(Auth, "/v1/auth")
 api.add_resource(Device, "/v1/device/<int:id>")
-api.add_resource(DeviceList, "/v1/device_list")
+api.add_resource(DeviceList, "/v1/device_list/<int:id>")
+api.add_resource(File, "/v1/file")
 
 if __name__ == '__main__':
     if len(sys.argv) != 2:
