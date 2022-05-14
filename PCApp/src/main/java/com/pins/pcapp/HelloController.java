@@ -1,6 +1,7 @@
 package com.pins.pcapp;
 
 import javafx.collections.ObservableList;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -25,10 +26,9 @@ public class HelloController {
     private void initialize() {
         addDeviceIcon("Device 1", "phone");
         addDeviceIcon("Device 2", "pc");
-        addDeviceIcon("Device 3", "pc");
-        addDeviceIcon("Device 4", "pc");
+        addDeviceIcon("Device 3", "phone");
+        addDeviceIcon("Device 4", "phone");
         addDeviceIcon("Device 5", "pc");
-        this.throwError("e");
     }
 
     @FXML
@@ -37,23 +37,25 @@ public class HelloController {
     }
 
     private void addDeviceIcon( String deviceName, String deviceType ) {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("device-option.fxml"));
+        FXMLLoader loaderDevices = new FXMLLoader(getClass().getResource("device-option.fxml"));
         ObservableList<Node> children = devicesFlowPane.getChildren();
         try {
-            BorderPane root = loader.load();
-            ((Label) root.lookup("#deviceNameLabel")).setText(deviceName);
+            BorderPane rootLoaderDevices = loaderDevices.load();
+            ((Label) rootLoaderDevices.lookup("#deviceNameLabel")).setText(deviceName);
             if (deviceType.equals("pc")) {
-                ((ImageView) root.lookup("#deviceIcon")).setImage(new Image(getClass().getResource("/icons/pc_icon.png").toString()));
+                ((ImageView) rootLoaderDevices.lookup("#deviceIcon")).setImage(new Image(getClass().getResource("/icons/pc_icon.png").toString()));
             } else if (deviceType.equals("phone")) {
-                ((ImageView) root.lookup("#deviceIcon")).setImage(new Image(getClass().getResource("/icons/smartphone_icon.png").toString()));
+                ((ImageView) rootLoaderDevices.lookup("#deviceIcon")).setImage(new Image(getClass().getResource("/icons/smartphone_icon.png").toString()));
             }
-            children.add(root);
-            root.setOnMouseClicked(event -> {
+            children.add(rootLoaderDevices);
+            rootLoaderDevices.setOnMouseClicked(event -> {
                 System.out.println("Clicked on " + deviceName);
                 // implement device selection handler here
+                FXMLLoader loaderFileManager = new FXMLLoader(getClass().getResource("file-sending-manager.fxml"));
+                this.switchSceneFromEvent(event, "file-sending-manager.fxml");
             });
         } catch (IOException e) {
-            e.printStackTrace();
+            this.throwError("Unexpected error occurred.");
         }
     }
 
@@ -74,7 +76,19 @@ public class HelloController {
                 stage.close();
             });
         } catch (IOException e) {
-            e.printStackTrace();
+            this.throwError("Unexpected error occurred.");
+        }
+    }
+
+    private void switchSceneFromEvent(Event event, String sceneName) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource(sceneName));
+            Scene scene = new Scene(root);
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            this.throwError("Unexpected error occurred.");
         }
     }
 }
