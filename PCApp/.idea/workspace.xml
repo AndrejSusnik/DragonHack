@@ -4,15 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4ccedccc-af59-4813-af0f-cddf924929ff" name="Changes" comment="Changes">
-      <change afterPath="$PROJECT_DIR$/src/main/resources/com/pins/pcapp/deviceOption.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/icons/pc_icon.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/icons/smartphone_icon.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="4ccedccc-af59-4813-af0f-cddf924929ff" name="Changes" comment="added basic devices ui">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/pins/pcapp/HelloApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/pins/pcapp/HelloApplication.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/pins/pcapp/HelloController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/pins/pcapp/HelloController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/pins/pcapp/hello-view.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/pins/pcapp/hello-view.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -83,8 +77,16 @@
       <updated>1652529542825</updated>
       <workItem from="1652529832119" duration="2815000" />
       <workItem from="1652532679475" duration="37000" />
-      <workItem from="1652532752210" duration="3112000" />
+      <workItem from="1652532752210" duration="3659000" />
     </task>
+    <task id="LOCAL-00001" summary="added basic devices ui">
+      <created>1652535907065</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1652535907065</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -104,5 +106,14 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <MESSAGE value="added basic devices ui" />
+    <option name="LAST_COMMIT_MESSAGE" value="added basic devices ui" />
+  </component>
+  <component name="XDebuggerManager">
+    <watches-manager>
+      <configuration name="Application">
+        <watch expression="new Image(getClass().getResource(&quot;/icons/pc_icon.png&quot;).toString()" language="JAVA" />
+      </configuration>
+    </watches-manager>
   </component>
 </project>

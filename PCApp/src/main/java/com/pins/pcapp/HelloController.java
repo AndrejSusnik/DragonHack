@@ -22,6 +22,9 @@ public class HelloController {
     private void initialize() {
         addDeviceIcon("Device 1", "phone");
         addDeviceIcon("Device 2", "pc");
+        addDeviceIcon("Device 3", "pc");
+        addDeviceIcon("Device 4", "pc");
+        addDeviceIcon("Device 5", "pc");
     }
 
     @FXML
@@ -32,15 +35,19 @@ public class HelloController {
     private void addDeviceIcon( String deviceName, String deviceType ) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("deviceOption.fxml"));
         ObservableList<Node> children = devicesFlowPane.getChildren();
-        children.clear();
         try {
             BorderPane root = loader.load();
-            ((Label) root.getScene().lookup("#deviceNameLabel")).setText(deviceName);
+            ((Label) root.lookup("#deviceNameLabel")).setText(deviceName);
             if (deviceType.equals("pc")) {
-                ((ImageView) root.getScene().lookup("#deviceIcon")).setImage(new Image(getClass().getResource("/icons/pc_icon.png").toString()));
+                ((ImageView) root.lookup("#deviceIcon")).setImage(new Image(getClass().getResource("/icons/pc_icon.png").toString()));
             } else if (deviceType.equals("phone")) {
-                ((ImageView) root.getScene().lookup("#deviceIcon")).setImage(new Image(getClass().getResource("/icons/smartphone_icon.png").toString()));
+                ((ImageView) root.lookup("#deviceIcon")).setImage(new Image(getClass().getResource("/icons/smartphone_icon.png").toString()));
             }
+            children.add(root);
+            root.setOnMouseClicked(event -> {
+                System.out.println("Clicked on " + deviceName);
+                // implement device selection handler here
+            });
         } catch (IOException e) {
             e.printStackTrace();
         }
