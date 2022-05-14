@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="140.0" prefWidth="150.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <center>
+      <ImageView fx:id="deviceIcon" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+         <image>
+            <Image url="@../../../icons/smartphone_icon.png" />
+         </image>
+      </ImageView>
+   </center>
+   <bottom>
+      <Label fx:id="deviceNameLabel" text="device_name" BorderPane.alignment="CENTER">
+         <font>
+            <Font name="Calibri" size="22.0" />
+         </font>
+      </Label>
+   </bottom>
+</BorderPane>
