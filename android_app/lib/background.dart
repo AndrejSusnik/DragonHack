@@ -1,10 +1,10 @@
 import 'dart:io';
 import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:flutter/services.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_background/flutter_background.dart';
-import 'package:mac_address/mac_address.dart';
+import 'package:receive_intent/receive_intent.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -12,8 +12,33 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  // static const platform = MethodChannel('files.dragondrop.io/files');
+  late AndroidIntent _initialIntent;
   String statusText = "Start Server";
+  String textContent = "SERET TEXT";
+  int count = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _init();
+  }
+
+  Future<void> _init() async {
+    final receivedIntent = await ReceiveAndroidIntent.getInitialIntent();
+
+    if (!mounted) return;
+
+    setState(() {
+      count++;
+      _initialIntent = receivedIntent!;
+      debugPrint("INITIAL INTENT: $_initialIntent");
+    });
+  }
+
   startServer() async {
+    // platform.invokeMethod("getSharedText").then((value) => setState(() => textContent = value)).onError((error, stackTrace) =>
+    //   debugPrint("FAILED EVERYTHING"));
     setState(() {
       statusText = "Starting server on Port : 8080";
     });
@@ -83,7 +108,9 @@ class _HomeState extends State<Home> {
               startServer();
             },
             child: Text(statusText),
-          )
+          ),
+          Text(textContent + "LMAO"),
+          Text("COUNT: $count"),
         ],
       ),
     ));
