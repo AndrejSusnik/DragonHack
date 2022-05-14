@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="350.0" prefWidth="350.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label fx:id="fileNameLabel" text="file_name">
+         <HBox.margin>
+            <Insets right="20.0" />
+         </HBox.margin>
+      </Label>
+      <ProgressBar fx:id="fileProgressIndicator" maxWidth="1.7976931348623157E308" progress="0.0" style="-fx-background-color: lightblue;">
+         <HBox.margin>
+            <Insets />
+         </HBox.margin>
+      </ProgressBar>
+      <ImageView fx:id="checkmarkIV" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" visible="false">
+         <image>
+            <Image url="@../../../icons/checkmark_icon.png" />
+         </image>
+         <HBox.margin>
+            <Insets left="5.0" />
+         </HBox.margin>
+      </ImageView>
+   </children>
+   <padding>
+      <Insets bottom="5.0" left="20.0" top="5.0" />
+   </padding>
+</HBox>

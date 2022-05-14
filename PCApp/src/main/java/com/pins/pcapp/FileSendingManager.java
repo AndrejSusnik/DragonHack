@@ -1,5 +1,6 @@
 package com.pins.pcapp;
 
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -7,10 +8,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -19,6 +24,7 @@ import java.io.IOException;
 public class FileSendingManager {
 
     public ImageView downloadIconImageView;
+    public VBox fileTransferProgressVBOX;
 
     @FXML
     private void initialize() {
@@ -32,8 +38,19 @@ public class FileSendingManager {
         downloadIconImageView.setOnDragDropped(dragEvent -> {
             Dragboard db = dragEvent.getDragboard();
             if (db.hasFiles()) {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("file-transfer-progress.fxml"));
+                ObservableList<Node> children = fileTransferProgressVBOX.getChildren();
                 db.getFiles().forEach(file -> {
-                    System.out.println(file.getAbsolutePath());
+                    try {
+                        HBox fileHBox = loader.load();
+                        ((Label) fileHBox.lookup("#fileNameLabel")).setText(file.getName());
+                        ProgressIndicator pi = (ProgressIndicator) fileHBox.lookup("#fileProgressIndicator");
+                        pi.setProgress(0);
+                        fileHBox.setMaxWidth(Double.MAX_VALUE);
+                        children.add(fileHBox);
+                    } catch (IOException e) {
+                        this.throwError("Unexpected error occurred.");
+                    }
                 });
                 dragEvent.setDropCompleted(true);
             } else {
