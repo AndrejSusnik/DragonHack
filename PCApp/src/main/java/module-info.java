@@ -11,7 +11,8 @@ module com.pins.pcapp {
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
     requires io.javalin;
-
-    opens com.pins.pcapp to javafx.fxml;
+    requires com.google.gson;
+    requires org.apache.httpcomponents.httpclient;
+    requires org.apache.httpcomponents.httpcore;
     exports com.pins.pcapp;
 }
