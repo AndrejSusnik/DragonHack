@@ -5,9 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.pins</groupId>
-    <artifactId>PCApp2</artifactId>
+    <artifactId>PCApp</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>PCApp2</name>
+    <name>PCApp</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -128,7 +128,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.pins.pcapp2/com.pins.pcapp2.HelloApplication</mainClass>
+                            <mainClass>com.pins.pcapp/com.pins.pcapp.HelloApplication</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>

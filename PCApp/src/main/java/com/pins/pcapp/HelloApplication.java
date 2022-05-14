@@ -1,4 +1,4 @@
-package com.pins.pcapp2;
+package com.pins.pcapp;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

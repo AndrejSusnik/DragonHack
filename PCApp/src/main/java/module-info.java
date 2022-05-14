@@ -1,4 +1,4 @@
-module com.pins.pcapp2 {
+module com.pins.pcapp {
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.web;
@@ -11,6 +11,6 @@ module com.pins.pcapp2 {
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
 
-    opens com.pins.pcapp2 to javafx.fxml;
-    exports com.pins.pcapp2;
+    opens com.pins.pcapp to javafx.fxml;
+    exports com.pins.pcapp;
 }

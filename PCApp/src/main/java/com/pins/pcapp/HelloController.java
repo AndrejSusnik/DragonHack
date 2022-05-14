@@ -1,4 +1,4 @@
-package com.pins.pcapp2;
+package com.pins.pcapp;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
