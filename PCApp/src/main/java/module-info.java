@@ -10,6 +10,7 @@ module com.pins.pcapp {
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
+    requires io.javalin;
 
     opens com.pins.pcapp to javafx.fxml;
     exports com.pins.pcapp;
