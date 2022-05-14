@@ -1,6 +1,7 @@
 package com.pins.pcapp;
 
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -81,11 +82,11 @@ public class HelloController {
             rootLoaderDevices.setOnMouseClicked(event -> {
                 System.out.println("Clicked on " + deviceName);
                 // implement device selection handler here
-                FXMLLoader loaderFileManager = new FXMLLoader(getClass().getResource("file-sending-manager.fxml"));
                 this.switchSceneFromEvent(event, "file-sending-manager.fxml");
             });
         } catch (IOException e) {
-            this.throwError("Unexpected error occurred.");
+            e.printStackTrace();
+//            this.throwError("Unexpected error occurred.");
         }
     }
 
@@ -94,7 +95,7 @@ public class HelloController {
             Parent root = FXMLLoader.load(getClass().getResource("error-popup.fxml"));
             Scene scene = new Scene(root);
             Stage stage = new Stage();
-            stage.setTitle("Napaka");
+            stage.setTitle("Error");
             stage.setScene(scene);
             stage.setResizable(false);
             stage.show();
@@ -118,7 +119,21 @@ public class HelloController {
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
-            this.throwError("Unexpected error occurred.");
+            e.printStackTrace();
+//            this.throwError("Unexpected error occurred.");
+        }
+    }
+
+    public void switchUserButtonPressed(ActionEvent actionEvent) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("switch-user.fxml"));
+            Scene scene = new Scene(root);
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+//            this.throwError("Unexpected error occurred.");
         }
     }
 }

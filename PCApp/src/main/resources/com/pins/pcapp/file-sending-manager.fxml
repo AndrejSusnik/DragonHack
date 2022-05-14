@@ -7,43 +7,43 @@
 <?import javafx.scene.text.*?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: lightskyblue;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pins.pcapp.FileSendingManager">
-   <top>
-      <Label text="device_name" BorderPane.alignment="CENTER">
-         <BorderPane.margin>
-            <Insets bottom="10.0" top="10.0" />
-         </BorderPane.margin>
-         <font>
-            <Font name="Roboto Light" size="34.0" />
-         </font>
-      </Label>
-   </top>
-   <bottom>
-      <Button mnemonicParsing="false" onAction="#backPressed" style="-fx-background-color: dimgray;" text="Back" textFill="WHITE" BorderPane.alignment="CENTER">
-         <font>
-            <Font name="Roboto Light" size="17.0" />
-         </font>
-         <BorderPane.margin>
-            <Insets bottom="10.0" />
-         </BorderPane.margin>
-         <padding>
-            <Insets bottom="5.0" left="20.0" right="20.0" top="5.0" />
-         </padding>
-      </Button>
-   </bottom>
-   <center>
-      <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: white;" BorderPane.alignment="CENTER">
-         <BorderPane.margin>
-            <Insets bottom="10.0" left="10.0" />
-         </BorderPane.margin>
-         <content>
-            <VBox fx:id="fileTransferProgressVBOX" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: lightblue;" />
-         </content>
-      </ScrollPane>
-   </center>
-   <right>
-      <ImageView fx:id="downloadIconImageView" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
-         <image>
-            <Image url="@../../../icons/download_icon.png" />
-         </image></ImageView>
-   </right>
+       <top>
+          <Label text="device_name" BorderPane.alignment="CENTER">
+             <BorderPane.margin>
+                <Insets bottom="10.0" top="10.0" />
+             </BorderPane.margin>
+             <font>
+                <Font name="Roboto Light" size="34.0" />
+             </font>
+          </Label>
+       </top>
+       <bottom>
+          <Button mnemonicParsing="false" onAction="#backPressed" style="-fx-background-color: dimgray;" text="Back" textFill="WHITE" BorderPane.alignment="CENTER">
+             <font>
+                <Font name="Roboto Light" size="17.0" />
+             </font>
+             <BorderPane.margin>
+                <Insets bottom="10.0" />
+             </BorderPane.margin>
+             <padding>
+                <Insets bottom="5.0" left="20.0" right="20.0" top="5.0" />
+             </padding>
+          </Button>
+       </bottom>
+       <center>
+          <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: white;" BorderPane.alignment="CENTER">
+             <BorderPane.margin>
+                <Insets bottom="10.0" left="10.0" />
+             </BorderPane.margin>
+             <content>
+                <VBox fx:id="fileTransferProgressVBOX" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: lightblue;" />
+             </content>
+          </ScrollPane>
+       </center>
+       <right>
+          <ImageView fitHeight="150.0" fitWidth="200.0" onDragDropped="#downloadDragDropped" onDragOver="#downloadDragOver" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+             <image>
+                <Image url="@../../../icons/download_icon.png" />
+             </image></ImageView>
+       </right>
 </BorderPane>

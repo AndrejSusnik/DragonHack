@@ -23,41 +23,7 @@ import java.io.IOException;
 
 public class FileSendingManager {
 
-    public ImageView downloadIconImageView;
     public VBox fileTransferProgressVBOX;
-
-    @FXML
-    private void initialize() {
-        downloadIconImageView.setOnDragOver(dragEvent -> {
-            Dragboard db = dragEvent.getDragboard();
-            if (db.hasFiles()) {
-                dragEvent.acceptTransferModes(TransferMode.MOVE);
-            }
-        });
-
-        downloadIconImageView.setOnDragDropped(dragEvent -> {
-            Dragboard db = dragEvent.getDragboard();
-            if (db.hasFiles()) {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("file-transfer-progress.fxml"));
-                ObservableList<Node> children = fileTransferProgressVBOX.getChildren();
-                db.getFiles().forEach(file -> {
-                    try {
-                        HBox fileHBox = loader.load();
-                        ((Label) fileHBox.lookup("#fileNameLabel")).setText(file.getName());
-                        ProgressIndicator pi = (ProgressIndicator) fileHBox.lookup("#fileProgressIndicator");
-                        pi.setProgress(0);
-                        fileHBox.setMaxWidth(Double.MAX_VALUE);
-                        children.add(fileHBox);
-                    } catch (IOException e) {
-                        this.throwError("Unexpected error occurred.");
-                    }
-                });
-                dragEvent.setDropCompleted(true);
-            } else {
-                dragEvent.setDropCompleted(false);
-            }
-        });
-    }
 
 
     public void backPressed(ActionEvent actionEvent) {
@@ -73,7 +39,7 @@ public class FileSendingManager {
             Parent root = FXMLLoader.load(getClass().getResource("error-popup.fxml"));
             Scene scene = new Scene(root);
             Stage stage = new Stage();
-            stage.setTitle("Napaka");
+            stage.setTitle("Error");
             stage.setScene(scene);
             stage.setResizable(false);
             stage.show();
@@ -98,6 +64,36 @@ public class FileSendingManager {
             stage.show();
         } catch (IOException e) {
             this.throwError("Unexpected error occurred.");
+        }
+    }
+
+    public void downloadDragDropped(DragEvent dragEvent) {
+        Dragboard db = dragEvent.getDragboard();
+        if (db.hasFiles()) {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("file-transfer-progress.fxml"));
+            ObservableList<Node> children = fileTransferProgressVBOX.getChildren();
+            db.getFiles().forEach(file -> {
+                try {
+                    HBox fileHBox = loader.load();
+                    ((Label) fileHBox.lookup("#fileNameLabel")).setText(file.getName());
+                    ProgressIndicator pi = (ProgressIndicator) fileHBox.lookup("#fileProgressIndicator");
+                    pi.setProgress(0);
+                    fileHBox.setMaxWidth(Double.MAX_VALUE);
+                    children.add(fileHBox);
+                } catch (IOException e) {
+                    this.throwError("Unexpected error occurred.");
+                }
+            });
+            dragEvent.setDropCompleted(true);
+        } else {
+            dragEvent.setDropCompleted(false);
+        }
+    }
+
+    public void downloadDragOver(DragEvent dragEvent) {
+        Dragboard db = dragEvent.getDragboard();
+        if (db.hasFiles()) {
+            dragEvent.acceptTransferModes(TransferMode.MOVE);
         }
     }
 }

@@ -18,8 +18,13 @@
             </ScrollPane>
               <Button alignment="TOP_RIGHT" mnemonicParsing="false" onAction="#refreshButtonPressed" style="-fx-background-color: lightskyblue;" text="Refresh devices" textAlignment="CENTER" StackPane.alignment="TOP_LEFT">
                <StackPane.margin>
-                  <Insets left="10.0" right="10.0" top="10.0" />
+                  <Insets left="10.0" top="10.0" />
                </StackPane.margin></Button>
+            <Button alignment="TOP_RIGHT" layoutX="20.0" layoutY="20.0" mnemonicParsing="false" onAction="#switchUserButtonPressed" style="-fx-background-color: lightgrey;" text="Swtich user" textAlignment="CENTER" StackPane.alignment="BOTTOM_LEFT">
+               <StackPane.margin>
+                  <Insets bottom="10.0" left="10.0" />
+               </StackPane.margin>
+            </Button>
          </children>
       </StackPane>
    </center>
