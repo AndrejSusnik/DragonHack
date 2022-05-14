@@ -20,7 +20,6 @@ authParser = reqparse.RequestParser()
 authParser.add_argument("password", required=True)
 authParser.add_argument("username", required=True)
 
-
 class Auth(Resource):
     def post(self):
         try:
