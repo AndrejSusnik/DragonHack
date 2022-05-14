@@ -10,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -19,21 +20,28 @@ public class FileSendingManager {
 
     public ImageView downloadIconImageView;
 
+    @FXML
+    private void initialize() {
+        downloadIconImageView.setOnDragOver(dragEvent -> {
+            Dragboard db = dragEvent.getDragboard();
+            if (db.hasFiles()) {
+                dragEvent.acceptTransferModes(TransferMode.MOVE);
+            }
+        });
 
-    public void fileDragDropped(DragEvent dragEvent) {
-//        Dragboard db = dragEvent.getDragboard();
-//        boolean success = false;
-//        if (db.hasFiles()) {
-//            success = true;
-//            String filePath = null;
-//            for (File file : db.getFiles()) {
-//                filePath = file.getAbsolutePath();
-//                System.out.println(filePath);
-//            }
-//        }
-//        dragEvent.setDropCompleted(success);
-//        dragEvent.consume();
+        downloadIconImageView.setOnDragDropped(dragEvent -> {
+            Dragboard db = dragEvent.getDragboard();
+            if (db.hasFiles()) {
+                db.getFiles().forEach(file -> {
+                    System.out.println(file.getAbsolutePath());
+                });
+                dragEvent.setDropCompleted(true);
+            } else {
+                dragEvent.setDropCompleted(false);
+            }
+        });
     }
+
 
     public void backPressed(ActionEvent actionEvent) {
         try {
