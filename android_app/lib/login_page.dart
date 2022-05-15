@@ -1,3 +1,4 @@
+import 'dart:core';
 import 'dart:html';
 
 import 'package:flutter/material.dart';
@@ -15,6 +16,7 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  List <TextEditingController> teds = [new TextEditingController(), new TextEditingController()];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,24 +43,27 @@ class _LoginState extends State<Login> {
             Padding(
               //padding: const EdgeInsets.only(left:15.0,right: 15.0,top:0,bottom: 0),
               padding: EdgeInsets.symmetric(horizontal: 15),
+              //entering username
               child: TextField(
                 decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'User Name',
                     hintText: 'Enter valid user name'),
+                controller: teds[0],
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(
-                  left: 15.0, right: 15.0, top: 15, bottom: 0),
-              //padding: EdgeInsets.symmetric(horizontal: 15),
-              child: TextField(
-                obscureText: true,
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Password',
-                    hintText: 'Enter good password'),
-              ),
+                padding: const EdgeInsets.only(
+                    left: 15.0, right: 15.0, top: 15, bottom: 0),
+                //padding: EdgeInsets.symmetric(horizontal: 15),
+                //entering password
+                child: TextField(
+                  obscureText: true,
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Password'),
+                  controller: teds[1],
+                ),
             ),
             Container(
               height: 50,
@@ -67,7 +72,9 @@ class _LoginState extends State<Login> {
                   color: Colors.blue, borderRadius: BorderRadius.circular(20)),
               child: FlatButton(
                 onPressed: () {
-                  _login();
+                  var user = teds[0].text;
+                  var pass = teds[1].text;
+                  _login(user, pass);
                 },
                 child: Text(
                   'Login',
@@ -108,7 +115,7 @@ class _LoginState extends State<Login> {
       storage.write(key: "userId", value: response.body?["id"]);
       Navigator.push(context, MaterialPageRoute(builder: (_) => Home()));
     }
-    String token = await storage.read(key: "token");
-    print("GOT TOKEN: " + token);
+    String? token = await storage.read(key: "token");
+    print("GOT TOKEN: " + token!);
   }
 }

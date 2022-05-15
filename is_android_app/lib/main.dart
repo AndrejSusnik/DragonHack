@@ -109,9 +109,6 @@ class _HomeState extends State<Home> {
 
   sendFile() async {}
 
-  Future<String> getUsername() async {
-  }
-
   Future<bool> _register() async {
     Response response = await register("admin", "admin");
     if (response.successful()) {
