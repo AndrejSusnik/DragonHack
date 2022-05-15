@@ -67,7 +67,7 @@ class _LoginState extends State<Login> {
             Container(
               height: 50,
               width: 250,
-              margin: EdgeInsets.only(top: 40, bottom: 100),
+              margin: EdgeInsets.only(top: 40),
               decoration: BoxDecoration(
                   color: Colors.blue, borderRadius: BorderRadius.circular(20)),
               child: FlatButton(
@@ -83,9 +83,11 @@ class _LoginState extends State<Login> {
               ),
             ),
             SizedBox(
-              height: 130,
+              height: 200,
             ),
             Container(
+              alignment: Alignment.bottomCenter,
+              margin: EdgeInsets.only(bottom: 20),
               child: GestureDetector(
                   child: Text(
                     'New User? Create Account',
