@@ -11,7 +11,7 @@ import java.io.IOException;
 public class HelloApplication extends Application {
 
     private String token;
-
+    ServerController serverController;
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
@@ -24,8 +24,14 @@ public class HelloApplication extends Application {
 
         stage.show();
         stage.setResizable(false);
-        ServerController serverController = new ServerController();
+        serverController = new ServerController();
         serverController.start();
+    }
+
+    @Override
+    public void stop() throws Exception {
+        super.stop();
+        serverController.stop();
     }
 
     public static void main(String[] args) {
