@@ -9,14 +9,17 @@ import 'api/api.dart';
 
 final storage = FlutterSecureStorage();
 
-
-class Login extends StatefulWidget {
+class Register extends StatefulWidget {
   @override
-  _LoginState createState() => _LoginState();
+  _RegisterState createState() => _RegisterState();
 }
 
-class _LoginState extends State<Login> {
-  List <TextEditingController> teds = [new TextEditingController(), new TextEditingController()];
+class _RegisterState extends State<Register> {
+  List<TextEditingController> teds = [
+    new TextEditingController(),
+    new TextEditingController(),
+    new TextEditingController()
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,36 +51,58 @@ class _LoginState extends State<Login> {
                 decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'User Name',
-                    hintText: 'Enter valid user name'),
+                    hintText: 'Enter user name'),
                 controller: teds[0],
               ),
             ),
             Padding(
-                padding: const EdgeInsets.only(
-                    left: 15.0, right: 15.0, top: 15, bottom: 0),
-                //padding: EdgeInsets.symmetric(horizontal: 15),
-                //entering password
-                child: TextField(
-                  obscureText: true,
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Password'),
-                  controller: teds[1],
-                ),
+              padding: const EdgeInsets.only(
+                  left: 15.0, right: 15.0, top: 15, bottom: 0),
+              //padding: EdgeInsets.symmetric(horizontal: 15),
+              //entering password
+              child: TextField(
+                obscureText: true,
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Password',
+                    hintText: 'Enter good password'),
+                controller: teds[1],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                  left: 15.0, right: 15.0, top: 15, bottom: 0),
+              //padding: EdgeInsets.symmetric(horizontal: 15),
+              //entering password
+              child: TextField(
+                obscureText: true,
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Repeat password',
+                    hintText: 'Repeat good password'),
+                controller: teds[2],
+              ),
             ),
             Container(
               height: 50,
               width: 250,
               decoration: BoxDecoration(
-                  color: Colors.blue, borderRadius: BorderRadius.circular(20)),
+                  color: Color.fromARGB(255, 2, 134, 57), borderRadius: BorderRadius.circular(20)),
               child: FlatButton(
                 onPressed: () {
                   var user = teds[0].text;
                   var pass = teds[1].text;
-                  _login(user, pass);
+                  var pass2 = teds[2].text;
+                  if (pass == pass2) {
+                    
+                    _register(user, pass);
+                  } else {
+                    print("Passwords don't match");
+                  }
+                  _register(user, pass);
                 },
                 child: Text(
-                  'Login',
+                  'Register',
                   style: TextStyle(color: Colors.white, fontSize: 25),
                 ),
               ),
@@ -85,35 +110,19 @@ class _LoginState extends State<Login> {
             SizedBox(
               height: 130,
             ),
-            Container(
-              height: 10,
-              width: 50,
-              decoration: BoxDecoration(
-                  color: Colors.blue, borderRadius: BorderRadius.circular(20)),
-              child: FlatButton(
-                onPressed: () {
-                },
-                child: Text(
-                  'New User? Create Account',
-                  style: TextStyle(color: Color.fromARGB(255, 255, 255, 255), fontSize: 25),
-                ),
-              ),
-            ),
           ],
         ),
       ),
     );
   }
-
-  void _login(username, password) async {
-    Response response = await login(username, password);
+  Future<bool> _register(username, password) async {
+    Response response = await register(username, password);
     if (response.successful()) {
-      storage.write(key: "token", value: response.body?["token"]);
-      storage.write(key: "userId", value: response.body?["id"]);
-      Navigator.push(context, MaterialPageRoute(builder: (_) => HomePage()));
+      print("Successfully registered");
+      return true;
+    } else {
+      print("Failed to register");
+      return false;
     }
-    String? token = await storage.read(key: "token");
-    print("GOT TOKEN: " + token!);
   }
 }
-
