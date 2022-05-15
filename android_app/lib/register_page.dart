@@ -1,3 +1,4 @@
+import 'package:android_app/login_page.dart';
 import 'package:flutter/material.dart';
 import 'api/api.dart';
 
@@ -17,7 +18,7 @@ class _RegisterState extends State<Register> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text("Login Page"),
+        title: Text("Registry Page"),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -76,22 +77,32 @@ class _RegisterState extends State<Register> {
               ),
             ),
             Container(
+              margin: EdgeInsets.only(top: 20),
               height: 50,
               width: 250,
               decoration: BoxDecoration(
-                  color: Color.fromARGB(255, 2, 134, 57), borderRadius: BorderRadius.circular(20)),
+                  color: Color.fromARGB(255, 2, 134, 57),
+                  borderRadius: BorderRadius.circular(20)),
               child: FlatButton(
-                onPressed: () {
+                onPressed: () async {
                   var user = teds[0].text;
                   var pass = teds[1].text;
                   var pass2 = teds[2].text;
                   if (pass == pass2) {
-                    
-                    _register(user, pass);
+                    bool res = await _register(user, pass);
+                    print(res);
+                    if (res) {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (_) => Login()));
+                    } else {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (_) => Register()));
+                    }
+                    ;
                   } else {
                     print("Passwords don't match");
+                    // reload register page
                   }
-                  _register(user, pass);
                 },
                 child: Text(
                   'Register',
@@ -107,6 +118,7 @@ class _RegisterState extends State<Register> {
       ),
     );
   }
+
   Future<bool> _register(username, password) async {
     Response response = await register(username, password);
     if (response.successful()) {
