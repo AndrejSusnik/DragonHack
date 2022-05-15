@@ -65,15 +65,6 @@ class _LoginState extends State<Login> {
                   controller: teds[1],
                 ),
             ),
-            FlatButton(
-              onPressed: () {
-                forgotPassword();
-              },
-              child: Text(
-                'Forgot Password',
-                style: TextStyle(color: Colors.blue, fontSize: 15),
-              ),
-            ),
             Container(
               height: 50,
               width: 250,
@@ -81,8 +72,8 @@ class _LoginState extends State<Login> {
                   color: Colors.blue, borderRadius: BorderRadius.circular(20)),
               child: FlatButton(
                 onPressed: () {
-                  var user = teds[0];
-                  var pass = teds[1];
+                  var user = teds[0].text;
+                  var pass = teds[1].text;
                   _login(user, pass);
                 },
                 child: Text(
@@ -101,99 +92,29 @@ class _LoginState extends State<Login> {
                   color: Colors.blue, borderRadius: BorderRadius.circular(20)),
               child: FlatButton(
                 onPressed: () {
-                  _register();
+                  
                 },
                 child: Text(
                   'New User? Create Account',
                   style: TextStyle(color: Color.fromARGB(255, 255, 255, 255), fontSize: 25),
                 ),
               ),
+            ),
           ],
         ),
       ),
     );
   }
 
-
-  Future<bool> _register() async {
-    Response response = await register("admin", "admin");
-    if (response.successful()) {
-      print("Successfully registered");
-      return true;
-    } else {
-      print("Failed to register");
-      return false;
-    }
-  }
-
-  Future<String> getUsername() {
-
-    return username;
-  }
-  String getPassword(String password) {
-    return password;
-  }
-  String 
-
-  void _login(uName, passwd) async {
-    Response response = await login(uName, passwd);
+  void _login(username, password) async {
+    Response response = await login(username, password);
     if (response.successful()) {
       storage.write(key: "token", value: response.body?["token"]);
+      storage.write(key: "userId", value: response.body?["id"]);
       Navigator.push(context, MaterialPageRoute(builder: (_) => HomePage()));
     }
-    String token = await storage.read(key: "token");
-    print("GOT TOKEN: " + token);
+    String? token = await storage.read(key: "token");
+    print("GOT TOKEN: " + token!);
   }
 }
 
-
-
-
-
-
-// Define a custom Form widget.
-class MyCustomForm extends StatefulWidget {
-  const MyCustomForm({Key? key}) : super(key: key);
-
-  @override
-  _MyCustomFormState createState() => _MyCustomFormState();
-}
-
-// Define a corresponding State class.
-// This class holds the data related to the Form.
-class _MyCustomFormState extends State<MyCustomForm> {
-  // Create a text controller and use it to retrieve the current value
-  // of the TextField.
-  final myController = TextEditingController();
-
-  @override
-  void dispose() {
-    // Clean up the controller when the widget is disposed.
-    myController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // Fill this out in the next step.
-  }
-}
-
-FloatingActionButton(
-  // When the user presses the button, show an alert dialog containing
-  // the text that the user has entered into the text field.
-  onPressed: () {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          // Retrieve the text that the user has entered by using the
-          // TextEditingController.
-          content: Text(myController.text),
-        );
-      },
-    );
-  },
-  tooltip: 'Show me the value!',
-  child: const Icon(Icons.text_fields),
-),
