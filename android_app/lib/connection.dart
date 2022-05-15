@@ -9,17 +9,16 @@ import 'dart:convert';
 final storage = FlutterSecureStorage();
 
 Future<Response> discover(String ip) async {
-  var res = await http.get(Uri.parse("http://$ip:9999/discovery")).timeout(
-      Duration(milliseconds: 100),
-      onTimeout: () => http.Response(json.encode({"Error": "Timeout"}), 400));
-  return Response(res.statusCode, await json.decode(res.body));
+  print("IP: " + "http://$ip:9999/discovery");
+  var res = await http.get(Uri.parse("http://$ip:9999/discovery"));
+  return Response(res.statusCode, {"body": res.body});
 }
 
 Future<Response> sendFile(String ip, String path) async {
   print("PATH: " + path);
   var res = await http.MultipartRequest(
     "POST",
-    Uri.parse("http://88.200.89.111:9999/file"),
+    Uri.parse("http://$ip:9999/file"),
   )
     ..files.add(await http.MultipartFile.fromPath("file", path))
     ..send();
@@ -29,5 +28,4 @@ Future<Response> sendFile(String ip, String path) async {
 
 receiveFile(HttpRequest request) async {
   var file = await request.connectionInfo;
-
 }

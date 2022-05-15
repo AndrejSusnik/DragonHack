@@ -14,9 +14,15 @@ final storage = FlutterSecureStorage();
 class Device {
   String? name;
   String? type;
-  int? id;
-  int? idUser;
+  String? id;
+  String? idUser;
   String? ip;
+
+  @override
+  String toString() {
+    // TODO: implement toString
+    return "$name $type $id $idUser $ip";
+  }
 }
 
 class Home extends StatefulWidget {
@@ -35,7 +41,7 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     myIp(onSuccess: () async {
-      await startServer();
+      startServer();
       _addDevice();
     });
   }
@@ -178,7 +184,7 @@ class _HomeState extends State<Home> {
                     ])))));
   }
 
-  Widget chooseDevicePopup() {
+  Widget chooseDevicePopup(int index) {
     return AlertDialog(
       title: Text("Choose Device"),
       content: Text("Choose a device to send the file to"),
@@ -192,7 +198,8 @@ class _HomeState extends State<Home> {
         FlatButton(
           onPressed: () {
             // sendFile("s", selectedFile.files[0].path!);
-            sendFile("s", selectedFile.files.single.path!);
+            print(devices[index].toString());
+            sendFile(devices[index].ip!, selectedFile.files.single.path!);
             Navigator.of(context).pop();
           },
           child: Text("Send"),
@@ -201,25 +208,33 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Future _getDevices() async {
+  Future<AsyncSnapshot> _getDevices() async {
     print("gettingDevices");
     Response response = await getDevices();
+    print(response.body);
     if (response.successful()) {
       devices = [];
 
       for (var device in response.body?["devices"]) {
+        print("ANDREJ?: " + device["ip"]);
         var discovery = await discover(device["ip"]);
-        if (!discovery.successful()) {
+        print("DISCOVERY: " + discovery.toString());
+        if (true) {
+          print(device);
           devices.add(Device()
             ..name = device["name"]
-            ..type = device["type"]);
+            ..type = device["type"]
+            ..id = device["id"]
+            ..ip = device["ip"]
+            ..idUser = device["id_user"]);
         } else {
           deleteDevice(device["id"]);
         }
       }
       print(devices.toString());
     }
-    return true;
+    return AsyncSnapshot.withData(ConnectionState.done,
+        {"devices": devices, "message": response.body["message"]});
   }
 
   AssetImage getDeviceImage(String deviceType) {
@@ -282,7 +297,7 @@ class _HomeState extends State<Home> {
                       showDialog(
                           context: context,
                           builder: (BuildContext context) {
-                            return chooseDevicePopup();
+                            return chooseDevicePopup(index);
                           });
                     });
               })),

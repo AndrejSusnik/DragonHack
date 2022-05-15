@@ -1,5 +1,6 @@
 import 'package:android_app/login_page.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'api/api.dart';
 
 class Register extends StatefulWidget {
@@ -84,23 +85,15 @@ class _RegisterState extends State<Register> {
                   color: Color.fromARGB(255, 2, 134, 57),
                   borderRadius: BorderRadius.circular(20)),
               child: FlatButton(
-                onPressed: () async {
+                onPressed: () {
                   var user = teds[0].text;
                   var pass = teds[1].text;
                   var pass2 = teds[2].text;
                   if (pass == pass2) {
-                    bool res = await _register(user, pass);
-                    print(res);
-                    if (res) {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (_) => Login()));
-                    } else {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (_) => Register()));
-                    }
-                    ;
+                    _register(user, pass, onSuccess, onFail);
                   } else {
                     print("Passwords don't match");
+                    Fluttertoast.showToast(msg: "Passwords don't match");
                     // reload register page
                   }
                 },
@@ -119,14 +112,17 @@ class _RegisterState extends State<Register> {
     );
   }
 
-  Future<bool> _register(username, password) async {
+  Future<void> _register(
+      username, password, VoidCallback onSuccess, VoidCallback onFail) async {
     Response response = await register(username, password);
     if (response.successful()) {
-      print("Successfully registered");
-      return true;
+      onSuccess.call();
     } else {
-      print("Failed to register");
-      return false;
+      onFail.call();
     }
   }
+
+  void onSuccess() {}
+
+  void onFail() {}
 }

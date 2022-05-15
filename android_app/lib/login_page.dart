@@ -4,6 +4,7 @@ import 'home_page.dart';
 import 'main.dart';
 import 'api/api.dart';
 import 'register_page.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 final storage = FlutterSecureStorage();
 
@@ -90,7 +91,7 @@ class _LoginState extends State<Login> {
                 onPressed: () {
                   var user = teds[0].text;
                   var pass = teds[1].text;
-                  _login(user, pass, onSuccessfullLogin);
+                  _login(user, pass, onSuccessfullLogin, onFailedLogin);
                 },
                 child: Text(
                   'Login',
@@ -118,14 +119,32 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Future<void> _login(
-      String username, String password, VoidCallback onSuccess) async {
+  Future<void> _login(String username, String password, VoidCallback onSuccess,
+      VoidCallback onFail) async {
     Response response = await login(username, password);
     if (response.successful()) {
-      await storage.write(key: "token", value: response.body?["token"]);
-      await storage.write(key: "userId", value: response.body?["user"]["id"]);
+      if (response.body.runtimeType is Map) {
+        Map body = response.body;
+        if (body["token"] == null) {
+          onFail.call();
+        }
+      } else {
+        await storage.write(key: "token", value: response.body?["token"]);
+        await storage.write(key: "userId", value: response.body?["user"]["id"]);
+        onSuccess.call();
+      }
     }
-    onSuccess.call();
+  }
+
+  onFailedLogin() {
+    Fluttertoast.showToast(
+        msg: "Failed to login",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0);
   }
 
   onSuccessfullLogin() {
