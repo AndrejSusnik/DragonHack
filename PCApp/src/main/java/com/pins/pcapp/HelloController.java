@@ -38,42 +38,6 @@ import java.net.NetworkInterface;
 import java.util.Enumeration;
 
 public class HelloController {
-    private interface IStreamListener {
-
-        void counterChanged(int delta);
-
-    }
-    private class MyFileBody extends FileBody {
-
-        private IStreamListener listener;
-
-        public MyFileBody(File file) {
-            super(file);
-        }
-
-        @Override
-        public void writeTo(OutputStream out) throws IOException {
-            CountingOutputStream output = new CountingOutputStream(out) {
-                @Override
-                protected void beforeWrite(int n) {
-                    if (listener != null && n != 0)
-                        listener.counterChanged(n);
-                    super.beforeWrite(n);
-                }
-            };
-            super.writeTo(output);
-
-        }
-
-        public void setListener(IStreamListener listener) {
-            this.listener = listener;
-        }
-
-        public IStreamListener getListener() {
-            return listener;
-        }
-
-    }
     public FlowPane devicesFlowPane;
     private static Pattern p = Pattern.compile("\\d*.\\d*.\\d*.\\d]");
 
@@ -88,28 +52,6 @@ public class HelloController {
 
     @FXML
     public void refreshButtonPressed() {
-        File f = new File("/home/asusnik/Downloads/Scand_20220513_115902.pdf");
-        MyFileBody fb = new MyFileBody(f);
-        fb.setListener(new IStreamListener(){
-
-            @Override
-            public void counterChanged(int delta) {
-                // do something
-                System.out.println(delta);
-            }});
-        HttpEntity entity = MultipartEntityBuilder.create()
-                .addPart("file", fb)
-                .build();
-
-        HttpPost request = new HttpPost("http://88.200.37.140:5000/v1/file");
-        request.setEntity(entity);
-
-        HttpClient client = HttpClientBuilder.create().build();
-        try{
-            HttpResponse response = client.execute(request);}
-        catch (Exception e ){
-
-        }
         System.out.println("Refresh button pressed");
     }
 

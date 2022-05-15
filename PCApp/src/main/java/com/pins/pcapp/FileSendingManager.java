@@ -17,6 +17,7 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import org.apache.commons.io.output.CountingOutputStream;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -24,11 +25,56 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.commons.io.FileUtils;
+import org.apache.http.HttpHeaders;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.impl.client.HttpClientBuilder;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.net.*;
+import java.nio.ByteBuffer;
+import java.nio.file.Files;
 
 public class FileSendingManager {
+
+    private interface IStreamListener {
+
+                void counterChanged(int delta);
+
+            }
+    private class MyFileBody extends FileBody {
+
+                private IStreamListener listener;
+
+                public MyFileBody(File file) {
+                        super(file);
+                    }
+
+                @Override
+        public void writeTo(OutputStream out) throws IOException {
+                        CountingOutputStream output = new CountingOutputStream(out) {
+                @Override
+                protected void beforeWrite(int n) {
+                                        if (listener != null && n != 0)
+                                                listener.counterChanged(n);
+                                        super.beforeWrite(n);
+                                    }
+            };
+                        super.writeTo(output);
+
+                            }
+
+                public void setListener(IStreamListener listener) {
+                        this.listener = listener;
+                    }
+
+                public IStreamListener getListener() {
+                        return listener;
+                    }
+
+            }
 
     public VBox fileTransferProgressVBOX;
 
@@ -54,7 +100,7 @@ public class FileSendingManager {
             javafx.scene.control.TextArea errorText = (javafx.scene.control.TextArea) scene.lookup("#errorTA");
             errorText.setText(errorMsg);
 
-            scene.lookup("#errorPopupBTN").setOnMouseClicked(e -> {
+            scene.lookup("#errorPopupBTN").setOnMouseClicked(e-> {
                 stage.close();
             });
         } catch (IOException e) {
@@ -82,12 +128,15 @@ public class FileSendingManager {
             db.getFiles().forEach(file -> {
                 try {
                     HBox fileHBox = loader.load();
-
                     ((Label) fileHBox.lookup("#fileNameLabel")).setText(file.getName());
                     ProgressIndicator pi = (ProgressIndicator) fileHBox.lookup("#fileProgressIndicator");
+                    ImageView imageView = (ImageView) fileHBox.lookup("#checkmark");
                     pi.setProgress(0);
                     fileHBox.setMaxWidth(Double.MAX_VALUE);
                     children.add(fileHBox);
+                    Runnable t = () -> sendFile(file.getAbsolutePath(), pi, imageView);
+                    Thread thread = new Thread(t);
+                    thread.start();
                 } catch (IOException e) {
                     this.throwError("Unexpected error occurred.");
                 }
@@ -103,5 +152,33 @@ public class FileSendingManager {
         if (db.hasFiles()) {
             dragEvent.acceptTransferModes(TransferMode.MOVE);
         }
+    }
+
+    public void sendFile(String filePath, ProgressIndicator pi, ImageView imageView) {
+        File f = new File(filePath);
+        MyFileBody fb = new MyFileBody(f);
+        fb.setListener(new IStreamListener() {
+
+            @Override
+            public void counterChanged(int delta) {
+                pi.setProgress(pi.getProgress() + delta / (double) fb.getFile().length());
+            }
+        });
+        HttpEntity entity = MultipartEntityBuilder.create()
+                .addPart("file", fb)
+                .build();
+
+        HttpPost request = new HttpPost("http://88.200.89.247:5000/v1/file");
+        request.setEntity(entity);
+
+        HttpClient client = HttpClientBuilder.create().build();
+        try {
+            HttpResponse response = client.execute(request);
+            imageView.setVisible(true);
+        } catch (Exception e) {
+
+
+        }
+        imageView.setVisible(true);
     }
 }
