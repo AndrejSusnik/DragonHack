@@ -68,7 +68,8 @@ class _HomeState extends State<Home> {
     // opens storage to pick files and the picked file or files
     // are assigned into result and if no file is chosen result is null.
     // you can also toggle "allowMultiple" true or false depending on your need
-    final result = await FilePicker.platform.pickFiles(allowMultiple: false, withData: true);
+    final result = await FilePicker.platform
+        .pickFiles(allowMultiple: false, withData: true);
     // if no file is picked
     if (result == null) {
       setState(() {
@@ -165,7 +166,6 @@ class _HomeState extends State<Home> {
         ),
         FlatButton(
           onPressed: () {
-            
             // sendFile("s", selectedFile.files[0].path!);
             sendFile("s", selectedFile.files.single.path!);
             Navigator.of(context).pop();

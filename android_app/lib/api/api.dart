@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
-final String serverUrl = "http://88.200.89.247:5000/v1";
+final String serverUrl = "http://88.200.36.19:5000/v1";
 
 final storage = FlutterSecureStorage();
 

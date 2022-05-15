@@ -1,6 +1,3 @@
-import 'dart:core';
-import 'dart:html';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'home_page.dart';
@@ -16,7 +13,10 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  List <TextEditingController> teds = [new TextEditingController(), new TextEditingController()];
+  List<TextEditingController> teds = [
+    new TextEditingController(),
+    new TextEditingController()
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,21 +53,21 @@ class _LoginState extends State<Login> {
               ),
             ),
             Padding(
-                padding: const EdgeInsets.only(
-                    left: 15.0, right: 15.0, top: 15, bottom: 0),
-                //padding: EdgeInsets.symmetric(horizontal: 15),
-                //entering password
-                child: TextField(
-                  obscureText: true,
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Password'),
-                  controller: teds[1],
-                ),
+              padding: const EdgeInsets.only(
+                  left: 15.0, right: 15.0, top: 15, bottom: 0),
+              //padding: EdgeInsets.symmetric(horizontal: 15),
+              //entering password
+              child: TextField(
+                obscureText: true,
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(), labelText: 'Password'),
+                controller: teds[1],
+              ),
             ),
             Container(
               height: 50,
               width: 250,
+              margin: EdgeInsets.only(top: 40, bottom: 100),
               decoration: BoxDecoration(
                   color: Colors.blue, borderRadius: BorderRadius.circular(20)),
               child: FlatButton(
@@ -86,21 +86,15 @@ class _LoginState extends State<Login> {
               height: 130,
             ),
             Container(
-              height: 10,
-              width: 50,
-              decoration: BoxDecoration(
-                  color: Colors.blue, borderRadius: BorderRadius.circular(20)),
-              child: FlatButton(
-                onPressed: () {
-                  Navigator.push(
-                      context, MaterialPageRoute(builder: (_) => Register()));
-                },
-                child: Text(
-                  'New User? Create Account',
-                  style: TextStyle(
-                      color: Color.fromARGB(255, 255, 255, 255), fontSize: 25),
-                ),
-              ),
+              child: GestureDetector(
+                  child: Text(
+                    'New User? Create Account',
+                    style: TextStyle(
+                        // color: Color.fromARGB(255, 255, 255, 255),
+                        fontSize: 16),
+                  ),
+                  onTap: () => Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => Register()))),
             ),
           ],
         ),
@@ -116,6 +110,6 @@ class _LoginState extends State<Login> {
       Navigator.push(context, MaterialPageRoute(builder: (_) => Home()));
     }
     String? token = await storage.read(key: "token");
-    print("GOT TOKEN: " + token!);
+    print("GOT TOKEN: " + token);
   }
 }
