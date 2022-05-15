@@ -5,9 +5,9 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'home_page.dart';
 import 'main.dart';
 import 'api/api.dart';
+import 'register_page.dart';
 
 final storage = FlutterSecureStorage();
-
 
 class Login extends StatefulWidget {
   @override
@@ -60,15 +60,6 @@ class _LoginState extends State<Login> {
                     hintText: 'Enter good password'),
               ),
             ),
-            FlatButton(
-              onPressed: () {
-                forgotPassword();
-              },
-              child: Text(
-                'Forgot Password',
-                style: TextStyle(color: Colors.blue, fontSize: 15),
-              ),
-            ),
             Container(
               height: 50,
               width: 250,
@@ -94,11 +85,13 @@ class _LoginState extends State<Login> {
                   color: Colors.blue, borderRadius: BorderRadius.circular(20)),
               child: FlatButton(
                 onPressed: () {
-                  _register();
+                  Navigator.push(
+                      context, MaterialPageRoute(builder: (_) => Register()));
                 },
                 child: Text(
-                  Text('New User? Create Account'),
-                  style: TextStyle(color: Color.fromARGB(255, 255, 255, 255), fontSize: 25),
+                  'New User? Create Account',
+                  style: TextStyle(
+                      color: Color.fromARGB(255, 255, 255, 255), fontSize: 25),
                 ),
               ),
             ),
@@ -108,33 +101,12 @@ class _LoginState extends State<Login> {
     );
   }
 
-
-  Future<bool> _register() async {
-    Response response = await register("admin", "admin");
-    if (response.successful()) {
-      print("Successfully registered");
-      return true;
-    } else {
-      print("Failed to register");
-      return false;
-    }
-  }
-  Future<String> getUsername() async {
-    String username = await 
-    return username;
-  }
-  Future<String> getPassword() async {
-    String password = await storage.read(key: "password");
-    return password;
-  }
-
-  void _login() async {
-    uName = await getUsername();
-    passwd = await getPassword();
-    Response response = await login(uName, passwd);
+  void _login(String username, String password) async {
+    Response response = await login(username, password);
     if (response.successful()) {
       storage.write(key: "token", value: response.body?["token"]);
-      Navigator.push(context, MaterialPageRoute(builder: (_) => HomePage()));
+      storage.write(key: "userId", value: response.body?["id"]);
+      Navigator.push(context, MaterialPageRoute(builder: (_) => Home()));
     }
     String token = await storage.read(key: "token");
     print("GOT TOKEN: " + token);
