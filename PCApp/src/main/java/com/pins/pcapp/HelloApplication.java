@@ -6,14 +6,23 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 public class HelloApplication extends Application {
 
     private String token;
+    public MiniDB miniDB;
 
     @Override
     public void start(Stage stage) throws IOException {
+//        FileInputStream miniDBJsonInputStream = (FileInputStream) getClass().getResourceAsStream("miniDB.json");
+//        miniDB = new MiniDB(miniDBJsonInputStream);
+//        String serverUrl = "88.200.36.19";
+//        miniDB.put("serverUrl", serverUrl);
+
+
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 550, 300);
         stage.setTitle("Hello!");

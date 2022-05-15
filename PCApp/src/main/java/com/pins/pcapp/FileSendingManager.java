@@ -37,46 +37,11 @@ import java.net.*;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
 
+
 public class FileSendingManager {
 
-    private interface IStreamListener {
-
-                void counterChanged(int delta);
-
-            }
-    private class MyFileBody extends FileBody {
-
-                private IStreamListener listener;
-
-                public MyFileBody(File file) {
-                        super(file);
-                    }
-
-                @Override
-        public void writeTo(OutputStream out) throws IOException {
-                        CountingOutputStream output = new CountingOutputStream(out) {
-                @Override
-                protected void beforeWrite(int n) {
-                                        if (listener != null && n != 0)
-                                                listener.counterChanged(n);
-                                        super.beforeWrite(n);
-                                    }
-            };
-                        super.writeTo(output);
-
-                            }
-
-                public void setListener(IStreamListener listener) {
-                        this.listener = listener;
-                    }
-
-                public IStreamListener getListener() {
-                        return listener;
-                    }
-
-            }
-
     public VBox fileTransferProgressVBOX;
+    public MiniDB miniDB;
 
 
     public void backPressed(ActionEvent actionEvent) {
@@ -100,7 +65,7 @@ public class FileSendingManager {
             javafx.scene.control.TextArea errorText = (javafx.scene.control.TextArea) scene.lookup("#errorTA");
             errorText.setText(errorMsg);
 
-            scene.lookup("#errorPopupBTN").setOnMouseClicked(e-> {
+            scene.lookup("#errorPopupBTN").setOnMouseClicked(e -> {
                 stage.close();
             });
         } catch (IOException e) {
@@ -168,7 +133,8 @@ public class FileSendingManager {
                 .addPart("file", fb)
                 .build();
 
-        HttpPost request = new HttpPost("http://88.200.89.247:5000/v1/file");
+        String serverURL = (String) miniDB.get("serverURL");
+        HttpPost request = new HttpPost("http://" + serverURL + ":999/file");
         request.setEntity(entity);
 
         HttpClient client = HttpClientBuilder.create().build();
@@ -177,8 +143,45 @@ public class FileSendingManager {
             imageView.setVisible(true);
         } catch (Exception e) {
 
-
         }
         imageView.setVisible(true);
+    }
+
+    private interface IStreamListener {
+
+        void counterChanged(int delta);
+
+    }
+
+    private class MyFileBody extends FileBody {
+
+        private IStreamListener listener;
+
+        public MyFileBody(File file) {
+            super(file);
+        }
+
+        @Override
+        public void writeTo(OutputStream out) throws IOException {
+            CountingOutputStream output = new CountingOutputStream(out) {
+                @Override
+                protected void beforeWrite(int n) {
+                    if (listener != null && n != 0)
+                        listener.counterChanged(n);
+                    super.beforeWrite(n);
+                }
+            };
+            super.writeTo(output);
+
+        }
+
+        public void setListener(IStreamListener listener) {
+            this.listener = listener;
+        }
+
+        public IStreamListener getListener() {
+            return listener;
+        }
+
     }
 }
