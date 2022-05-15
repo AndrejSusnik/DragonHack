@@ -19,7 +19,7 @@ Future<Response> sendFile(String ip, String path) async {
   print("PATH: " + path);
   var res = await http.MultipartRequest(
     "POST",
-    Uri.parse("http://88.200.36.249:5000/v1/file"),
+    Uri.parse("http://88.200.89.111:9999/file"),
   )
     ..files.add(await http.MultipartFile.fromPath("file", path))
     ..send();
