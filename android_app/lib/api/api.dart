@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
-final String serverUrl = "http://88.200.36.249:5000/v1";
+final String serverUrl = "http://88.200.89.111:5000/v1";
 
 final storage = FlutterSecureStorage();
 
@@ -42,7 +42,16 @@ Future<Response> login(String username, String password) async {
 
 Future<Response> getDevices() async {
   var token = await storage.read(key: "token");
-  var res = await http.get(Uri.parse("$serverUrl/device_list/1"),
+  var user = await storage.read(key: "userId");
+  var res = await http.get(Uri.parse("$serverUrl/device_list/$user"),
+      headers: {"Authorization": "Bearer $token"});
+  return Response(res.statusCode, json.decode(res.body));
+}
+
+Future<Response> addDevice(Map? discoveryFrame) async {
+  var token = await storage.read(key: "token");
+  var res = await http.post(Uri.parse("$serverUrl/device"),
+      body: json.encode(discoveryFrame),
       headers: {"Authorization": "Bearer $token"});
   return Response(res.statusCode, json.decode(res.body));
 }

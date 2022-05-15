@@ -4,8 +4,8 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:network_info_plus/network_info_plus.dart';
 import 'api/api.dart';
-
 // import 'package:open_file/open_file.dart';
 // import 'background.dart';
 
@@ -29,38 +29,67 @@ class _HomeState extends State<Home> {
   var selectedDevice = Device();
   var fileSelected = false;
   late FilePickerResult selectedFile;
+  String wifiIP = "";
 
   @override
   void initState() {
     super.initState();
-    startServer();
+    myIp(onSuccess: () async {
+      await startServer();
+      _addDevice();
+    });
   }
 
-  startServer() async {
-    var server = await HttpServer.bind("0.0.0.0", 9999);
+  Future<void> _addDevice({VoidCallback? onSuccess}) async {
+    Map<String, String> DISCOVERY_FRAME = {
+      "id": await storage.read(key: "deviceId"),
+      "device_type": "phone",
+      "ip": wifiIP
+    };
+    var response = await addDevice(DISCOVERY_FRAME);
+    onSuccess?.call();
+  }
+
+  Future<void> myIp({VoidCallback? onSuccess}) async {
+    for (var interface in await NetworkInterface.list()) {
+      if (interface.name == "wlan0") {
+        wifiIP = interface.addresses.first.address;
+      }
+    }
+    onSuccess?.call();
+  }
+
+  startServer({VoidCallback? onSuccess}) async {
+    var server = await HttpServer.bind("0.0.0.0", 9999, shared: true);
+    NetworkInfo networkInfo = NetworkInfo();
     print("Server running on IP : " +
-        server.address.toString() +
+        wifiIP +
         " On Port : " +
         server.port.toString());
     await for (var request in server) {
-      if (request.uri.path == '/discovery' && request.method == 'GET') {
-        Map<String, String> DISCOVERY_FRAME = {
-          "device_name": Platform.isAndroid ? "Android Phone" : "iPhone",
-          "device_type": "phone",
-          "passphrase": "admin"
-        };
-        request.response
-          ..headers.contentType =
-              new ContentType("text", "html", charset: "utf-8")
-          ..write(json.encode(DISCOVERY_FRAME))
-          ..close();
-      } else {
-        request.response
-          ..headers.contentType =
-              new ContentType("text", "html", charset: "utf-8")
-          ..write("Not implemented :)!")
-          ..close();
+      if (request.method == 'GET') {
+        if (request.uri.path == '/discovery') {
+          Map<String, String> DISCOVERY_FRAME = {
+            "id": await storage.read(key: "deviceId"),
+            "device_type": "phone",
+            "ip": wifiIP
+          };
+          request.response
+            ..headers.contentType =
+                new ContentType("text", "html", charset: "utf-8")
+            ..write(json.encode(DISCOVERY_FRAME))
+            ..close();
+        } else if (request.uri.path == "/file") {
+          // receiveFile(request);
+        } else {
+          request.response
+            ..headers.contentType =
+                new ContentType("text", "html", charset: "utf-8")
+            ..write("Not implemented :)!")
+            ..close();
+        }
       }
+      onSuccess?.call();
     }
   }
 
@@ -139,10 +168,6 @@ class _HomeState extends State<Home> {
                                 }
                               })),
                       RaisedButton(
-                        child: Text("Login"),
-                        onPressed: () => _login(),
-                      ),
-                      RaisedButton(
                         onPressed: () {
                           _pickFile();
                         },
@@ -176,28 +201,8 @@ class _HomeState extends State<Home> {
     );
   }
 
-  void _register() async {
-    Response response = await register("admin", "admin");
-    if (response.successful()) {
-      print("Successfully registered");
-      // return true;
-    } else {
-      print("Failed to register");
-      // return false;
-    }
-  }
-
-  void _login() async {
-    Response response = await login("admin", "admin");
-    if (response.successful()) {
-      storage.write(
-          key: "token", value: response.body?["token"].toString().trim());
-    }
-    String token = await storage.read(key: "token");
-    print("GOT TOKEN: " + token);
-  }
-
   Future _getDevices() async {
+    print("gettingDevices");
     Response response = await getDevices();
     if (response.successful()) {
       devices = [];
@@ -212,6 +217,7 @@ class _HomeState extends State<Home> {
           deleteDevice(device["id"]);
         }
       }
+      print(devices.toString());
     }
     return true;
   }
@@ -229,6 +235,8 @@ class _HomeState extends State<Home> {
 
   Widget buildDeviceGrid() {
     return OverflowBox(
+        minHeight: MediaQuery.of(context).size.height / 2,
+        minWidth: MediaQuery.of(context).size.width / 2,
         maxHeight: MediaQuery.of(context).size.height - 150,
         maxWidth: MediaQuery.of(context).size.width - 20,
         child: Container(

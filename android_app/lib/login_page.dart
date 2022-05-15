@@ -17,12 +17,28 @@ class _LoginState extends State<Login> {
     new TextEditingController(),
     new TextEditingController()
   ];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    loggedIn();
+  }
+
+  loggedIn() async {
+    // var token = await storage.read(key: "token");
+    // if (token != null) {
+    //   Navigator.pushReplacement(
+    //       context, MaterialPageRoute(builder: (context) => Home()));
+    // }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text("Login Page"),
+        title: Text("Login"),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -74,7 +90,7 @@ class _LoginState extends State<Login> {
                 onPressed: () {
                   var user = teds[0].text;
                   var pass = teds[1].text;
-                  _login(user, pass);
+                  _login(user, pass, onSuccessfullLogin);
                 },
                 child: Text(
                   'Login',
@@ -86,32 +102,33 @@ class _LoginState extends State<Login> {
               height: 200,
             ),
             Container(
-              alignment: Alignment.bottomCenter,
-              margin: EdgeInsets.only(bottom: 20),
-              child: GestureDetector(
-                  child: Text(
-                    'New User? Create Account',
-                    style: TextStyle(
-                        // color: Color.fromARGB(255, 255, 255, 255),
-                        fontSize: 16),
-                  ),
-                  onTap: () => Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => Register()))),
-            ),
+                alignment: Alignment.bottomCenter,
+                margin: EdgeInsets.only(bottom: 20),
+                child: GestureDetector(
+                    child: Text(
+                      'New User? Create Account',
+                      style: TextStyle(
+                          // color: Color.fromARGB(255, 255, 255, 255),
+                          fontSize: 16),
+                    ),
+                    onTap: () => Navigator.pushNamed(context, "/register"))),
           ],
         ),
       ),
     );
   }
 
-  void _login(String username, String password) async {
+  Future<void> _login(
+      String username, String password, VoidCallback onSuccess) async {
     Response response = await login(username, password);
     if (response.successful()) {
-      storage.write(key: "token", value: response.body?["token"]);
-      storage.write(key: "userId", value: response.body?["id"]);
-      Navigator.push(context, MaterialPageRoute(builder: (_) => Home()));
+      await storage.write(key: "token", value: response.body?["token"]);
+      await storage.write(key: "userId", value: response.body?["user"]["id"]);
     }
-    String? token = await storage.read(key: "token");
-    print("GOT TOKEN: " + token);
+    onSuccess.call();
+  }
+
+  onSuccessfullLogin() {
+    Navigator.pushNamed(context, '/home');
   }
 }

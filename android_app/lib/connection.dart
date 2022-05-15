@@ -26,3 +26,8 @@ Future<Response> sendFile(String ip, String path) async {
   return Response(200, {});
   // return Response(res.statusCode, await json.decode(re));
 }
+
+receiveFile(HttpRequest request) async {
+  var file = await request.connectionInfo;
+
+}
