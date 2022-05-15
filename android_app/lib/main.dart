@@ -4,6 +4,7 @@ import 'package:file_picker/file_picker.dart';
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'api/api.dart';
+import 'home_page.dart';
 // import 'package:open_file/open_file.dart';
 // import 'background.dart';
 
@@ -81,11 +82,8 @@ class _HomeState extends State<Home> {
         ),
         backgroundColor: Colors.green[100],
         body: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage()
-          ),
-        )
-    );
+          decoration: BoxDecoration(image: DecorationImage()),
+        ));
   }
 
   Widget chooseDevicePopup() {
@@ -111,12 +109,17 @@ class _HomeState extends State<Home> {
 
   sendFile() async {}
 
-  void _register() async {
+  Future<String> getUsername() async {
+  }
+
+  Future<bool> _register() async {
     Response response = await register("admin", "admin");
     if (response.successful()) {
       print("Successfully registered");
+      return true;
     } else {
       print("Failed to register");
+      return false;
     }
   }
 
@@ -124,6 +127,7 @@ class _HomeState extends State<Home> {
     Response response = await login("admin", "admin");
     if (response.successful()) {
       storage.write(key: "token", value: response.body?["token"]);
+      Navigator.push(context, MaterialPageRoute(builder: (_) => HomePage()));
     }
     String token = await storage.read(key: "token");
     print("GOT TOKEN: " + token);
