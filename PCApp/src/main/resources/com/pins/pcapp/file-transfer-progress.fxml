@@ -17,7 +17,7 @@
             <Insets />
          </HBox.margin>
       </ProgressBar>
-      <ImageView fx:id="checkmarkIV" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" visible="false">
+      <ImageView fx:id="checkmark" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" visible="false">
          <image>
             <Image url="@../../../icons/checkmark_icon.png" />
          </image>
