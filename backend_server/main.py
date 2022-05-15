@@ -37,6 +37,7 @@ class Device(Resource):
     def post(self, id):
         try:
             args = deviceParser.parse_args()
+            print(args) 
             device = db.Device(name=args["name"], type=args["type"], network_ssid=args["network_ssid"], ip=args["ip"], id_user=args["id_user"])
             db.session.add(device)
             db.session.commit()
@@ -82,7 +83,7 @@ class Auth(Resource):
                 print(user.as_dict())
                 token =  create_access_token(identity=user.as_dict(), expires_delta=False)
                 print(token)
-                return {"token": token}, 200
+                return {"token": token, "user": user.as_dict()}, 200
             else:
                 return {"error": "Incorrect username or password"}, 342
         except Exception as e:

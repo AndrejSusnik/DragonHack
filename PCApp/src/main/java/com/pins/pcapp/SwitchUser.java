@@ -1,5 +1,6 @@
 package com.pins.pcapp;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -10,6 +11,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -21,25 +24,69 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.*;
+import java.util.Enumeration;
+import java.util.regex.Pattern;
 
 public class SwitchUser {
 
     public PasswordField passwordField;
     public TextField usernameField;
     public String serverUrl = HelloApplication.serverUrl;
+    public static Pattern p = Pattern.compile("88.200.\\d*.\\d*");
+
+    public static String getIp() {
+
+        try {
+            Enumeration e = NetworkInterface.getNetworkInterfaces();
+            while (e.hasMoreElements()) {
+                NetworkInterface n = (NetworkInterface) e.nextElement();
+                Enumeration ee = n.getInetAddresses();
+                while (ee.hasMoreElements()) {
+                    InetAddress i = (InetAddress) ee.nextElement();
+                    if (p.matcher(i.toString().substring(1)).find()) {
+                        return i.toString();
+                    }
+                    System.out.println(i.getHostAddress());
+                }
+            }
+        } catch (Exception e) {
+        }
+        return null;
+    }
 
     public void loginButtonPressed(ActionEvent actionEvent) {
         HttpResponse rawResponse = sendUsernamePassword("POST");
         if (rawResponse == null) {
             return;
         }
+
         String status = rawResponse.getStatusLine().toString();
         if (status.equals("HTTP/1.1 200 OK")) {
             String token = getTokenFromRawResponse(rawResponse);
+
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("id", 0);
+            jsonObject.addProperty("name", "Desktop computer");
+            jsonObject.addProperty("type", "computer");
+            jsonObject.addProperty("ip", getIp());
+            jsonObject.addProperty("id_user", 2);
+
+            HttpClient httpclient = HttpClientBuilder.create().build();
+            StringEntity requestEntity = new StringEntity(
+                    jsonObject.toString(),
+                    ContentType.APPLICATION_JSON);
+
+            HttpPost postMethod = new HttpPost("http://" + serverUrl + ":5000/v1/device");
+            postMethod.setEntity(requestEntity);
+            try {
+                HttpResponse resp = httpclient.execute(postMethod);
+            } catch (Exception e) {
+            }
         } else {
             // put code for invalid login
         }
         this.switchSceneFromEvent(actionEvent, "hello-view.fxml");
+
     }
 
     public void registerButtonPressed(ActionEvent actionEvent) {

@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 import java.io.IOException;
 
 import javafx.stage.Stage;
+import org.apache.http.client.methods.HttpPost;
 
 public class HelloController {
     public FlowPane devicesFlowPane;
@@ -26,6 +27,9 @@ public class HelloController {
 
     @FXML
     public void initialize() {
+        final String serverURL = "88.200.89.111";
+        HttpPost getRequest = new HttpPost("http://" + serverURL + ":5000/v1/device_list");
+
         addDeviceIcon("Device 1", "phone");
         addDeviceIcon("Device 2", "pc");
         addDeviceIcon("Device 3", "phone");

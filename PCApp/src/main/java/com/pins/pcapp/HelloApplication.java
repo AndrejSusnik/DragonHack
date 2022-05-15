@@ -33,6 +33,7 @@ public class HelloApplication extends Application {
 
     @Override
     public void stop() throws Exception {
+        serverController.stop();
         super.stop();
     }
 
