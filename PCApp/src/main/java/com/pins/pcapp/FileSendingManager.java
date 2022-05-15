@@ -17,6 +17,13 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.impl.client.HttpClientBuilder;
 
 import java.io.File;
 import java.io.IOException;
@@ -75,6 +82,7 @@ public class FileSendingManager {
             db.getFiles().forEach(file -> {
                 try {
                     HBox fileHBox = loader.load();
+
                     ((Label) fileHBox.lookup("#fileNameLabel")).setText(file.getName());
                     ProgressIndicator pi = (ProgressIndicator) fileHBox.lookup("#fileProgressIndicator");
                     pi.setProgress(0);

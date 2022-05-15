@@ -14,5 +14,7 @@ module com.pins.pcapp {
     requires com.google.gson;
     requires org.apache.httpcomponents.httpclient;
     requires org.apache.httpcomponents.httpcore;
+    requires org.apache.httpcomponents.httpmime;
+    requires org.apache.commons.io;
     exports com.pins.pcapp;
 }

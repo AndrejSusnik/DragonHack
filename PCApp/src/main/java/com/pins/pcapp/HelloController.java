@@ -14,16 +14,66 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
+
+import java.io.File;
+import java.io.OutputStream;
 import java.util.regex.Pattern;
+
 import javafx.scene.layout.HBox;
 
 import java.io.IOException;
+
 import javafx.stage.Stage;
+import org.apache.commons.io.output.CountingOutputStream;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.impl.client.HttpClientBuilder;
+
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.Enumeration;
-public class HelloController {
 
+public class HelloController {
+    private interface IStreamListener {
+
+        void counterChanged(int delta);
+
+    }
+    private class MyFileBody extends FileBody {
+
+        private IStreamListener listener;
+
+        public MyFileBody(File file) {
+            super(file);
+        }
+
+        @Override
+        public void writeTo(OutputStream out) throws IOException {
+            CountingOutputStream output = new CountingOutputStream(out) {
+                @Override
+                protected void beforeWrite(int n) {
+                    if (listener != null && n != 0)
+                        listener.counterChanged(n);
+                    super.beforeWrite(n);
+                }
+            };
+            super.writeTo(output);
+
+        }
+
+        public void setListener(IStreamListener listener) {
+            this.listener = listener;
+        }
+
+        public IStreamListener getListener() {
+            return listener;
+        }
+
+    }
     public FlowPane devicesFlowPane;
     private static Pattern p = Pattern.compile("\\d*.\\d*.\\d*.\\d]");
 
@@ -38,36 +88,32 @@ public class HelloController {
 
     @FXML
     public void refreshButtonPressed() {
-        Runnable task = () -> {
-            try{Enumeration e = NetworkInterface.getNetworkInterfaces();
-                while(e.hasMoreElements())
-                {
-                    NetworkInterface n = (NetworkInterface) e.nextElement();
-                    java.util.List<java.net.InterfaceAddress> addresses = n.getInterfaceAddresses();
-                    for(java.net.InterfaceAddress a : addresses) {
-                        if(p.matcher(a.toString()).find()){
-                            final Network net = new Network(a.getAddress(), a.getNetworkPrefixLength());
-                            System.out.println(net);
-                            for(String el : net.getAllAddresses())
-                            {
-                               String response = ServerClient.discover(el);
-                               if(response != null) {
-                                   System.out.println(response);
-                               }
-                            }
-                        }
-                    }
-                }
-            }
-            catch (java.net.SocketException e){}
+        File f = new File("/home/asusnik/Downloads/Scand_20220513_115902.pdf");
+        MyFileBody fb = new MyFileBody(f);
+        fb.setListener(new IStreamListener(){
 
-        };
-        Thread thread = new Thread(task);
-        thread.start();
+            @Override
+            public void counterChanged(int delta) {
+                // do something
+                System.out.println(delta);
+            }});
+        HttpEntity entity = MultipartEntityBuilder.create()
+                .addPart("file", fb)
+                .build();
+
+        HttpPost request = new HttpPost("http://88.200.37.140:5000/v1/file");
+        request.setEntity(entity);
+
+        HttpClient client = HttpClientBuilder.create().build();
+        try{
+            HttpResponse response = client.execute(request);}
+        catch (Exception e ){
+
+        }
         System.out.println("Refresh button pressed");
     }
 
-    private void addDeviceIcon( String deviceName, String deviceType ) {
+    private void addDeviceIcon(String deviceName, String deviceType) {
         FXMLLoader loaderDevices = new FXMLLoader(getClass().getResource("device-option.fxml"));
         ObservableList<Node> children = devicesFlowPane.getChildren();
         try {
