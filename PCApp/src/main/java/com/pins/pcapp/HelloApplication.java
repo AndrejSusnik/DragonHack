@@ -13,16 +13,10 @@ import java.io.InputStream;
 public class HelloApplication extends Application {
 
     private String token;
-    public MiniDB miniDB;
+    public static String serverUrl = "88.200.36.249";
     ServerController serverController;
     @Override
     public void start(Stage stage) throws IOException {
-//        FileInputStream miniDBJsonInputStream = (FileInputStream) getClass().getResourceAsStream("miniDB.json");
-//        miniDB = new MiniDB(miniDBJsonInputStream);
-//        String serverUrl = "88.200.36.19";
-//        miniDB.put("serverUrl", serverUrl);
-
-
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 550, 300);
         stage.setTitle("Hello!");

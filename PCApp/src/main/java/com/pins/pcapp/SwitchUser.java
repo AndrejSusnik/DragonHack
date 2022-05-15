@@ -10,7 +10,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -23,14 +22,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.*;
 
-import com.pins.pcapp.MiniDB;
-
 public class SwitchUser {
 
     public PasswordField passwordField;
     public TextField usernameField;
-    public MiniDB miniDB;
-    public String serverURL = (String) miniDB.get("serverURL");
+    public String serverUrl = HelloApplication.serverUrl;
 
     public void loginButtonPressed(ActionEvent actionEvent) {
         HttpResponse rawResponse = sendUsernamePassword("POST");
@@ -40,7 +36,6 @@ public class SwitchUser {
         String status = rawResponse.getStatusLine().toString();
         if (status.equals("HTTP/1.1 200 OK")) {
             String token = getTokenFromRawResponse(rawResponse);
-            miniDB.put("token", token);
         } else {
             // put code for invalid login
         }
@@ -88,12 +83,12 @@ public class SwitchUser {
 
         try {
             if (method.equals("POST")) {
-                HttpPost postMethod = new HttpPost("http://" + serverURL + ":5000/v1/auth");
+                HttpPost postMethod = new HttpPost("http://" + serverUrl + ":5000/v1/auth");
                 postMethod.setEntity(requestEntity);
                 HttpResponse rawResponse = httpclient.execute(postMethod);
                 return rawResponse;
             } else if (method.equals("PUT")) {
-                HttpPut putMethod = new HttpPut("http://" + serverURL + ":5000/v1/auth");
+                HttpPut putMethod = new HttpPut("http://" + serverUrl + ":5000/v1/auth");
                 putMethod.setEntity(requestEntity);
                 HttpResponse rawResponse = httpclient.execute(putMethod);
                 return rawResponse;

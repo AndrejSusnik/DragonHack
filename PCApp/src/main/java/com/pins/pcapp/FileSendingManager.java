@@ -41,8 +41,7 @@ import java.nio.file.Files;
 public class FileSendingManager {
 
     public VBox fileTransferProgressVBOX;
-    public MiniDB miniDB;
-
+    public String serverUrl = HelloApplication.serverUrl;
 
     public void backPressed(ActionEvent actionEvent) {
         try {
@@ -132,9 +131,7 @@ public class FileSendingManager {
         HttpEntity entity = MultipartEntityBuilder.create()
                 .addPart("file", fb)
                 .build();
-
-        String serverURL = (String) miniDB.get("serverURL");
-        HttpPost request = new HttpPost("http://" + serverURL + ":999/file");
+        HttpPost request = new HttpPost("http://" + serverUrl + ":9999/file");
         request.setEntity(entity);
 
         HttpClient client = HttpClientBuilder.create().build();
