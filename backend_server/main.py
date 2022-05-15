@@ -1,5 +1,5 @@
 import hashlib
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_restful import Resource, Api, reqparse
 from matplotlib.pyplot import cla
 import db
@@ -10,6 +10,7 @@ import os
 from flask_cors import CORS
 import werkzeug
 from dotenv import load_dotenv
+import json
 
 load_dotenv()
 
@@ -114,13 +115,15 @@ class File(Resource):
     def __init__(self) -> None:
         super().__init__()
         self.parser = reqparse.RequestParser()
-        self.parser.add_argument("file",type=werkzeug.datastructures.FileStorage, location='files')
+        self.parser.add_argument("file",type=werkzeug.datastructures.FileStorage, location='file')
 
-    def post(self):
-        args = self.parser.parse_args()
-        file = args.get("file")
-        print(file)
-        pass
+    def post(self): 
+        file = request.files.get("file")
+        if(file):
+            file.save(os.path.join(os.getcwd(), "assets", file.filename))
+            return {"message": "File uploaded"}, 200
+        else:
+            return {"message": "No file"}, 342
 
 api.add_resource(Auth, "/v1/auth")
 api.add_resource(Device, "/v1/device/<int:id>")
