@@ -14,28 +14,11 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
-
-import java.io.File;
-import java.io.OutputStream;
 import java.util.regex.Pattern;
-
-import javafx.scene.layout.HBox;
 
 import java.io.IOException;
 
 import javafx.stage.Stage;
-import org.apache.commons.io.output.CountingOutputStream;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.impl.client.HttpClientBuilder;
-
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.util.Enumeration;
 
 public class HelloController {
     public FlowPane devicesFlowPane;
@@ -108,7 +91,6 @@ public class HelloController {
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
-//            this.throwError("Unexpected error occurred.");
         }
     }
 
@@ -121,7 +103,6 @@ public class HelloController {
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
-//            this.throwError("Unexpected error occurred.");
         }
     }
 }

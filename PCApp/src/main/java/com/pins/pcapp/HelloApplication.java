@@ -14,7 +14,7 @@ public class HelloApplication extends Application {
 
     private String token;
     public MiniDB miniDB;
-
+    ServerController serverController;
     @Override
     public void start(Stage stage) throws IOException {
 //        FileInputStream miniDBJsonInputStream = (FileInputStream) getClass().getResourceAsStream("miniDB.json");
@@ -33,8 +33,13 @@ public class HelloApplication extends Application {
 
         stage.show();
         stage.setResizable(false);
-        ServerController serverController = new ServerController();
+        serverController = new ServerController();
         serverController.start();
+    }
+
+    @Override
+    public void stop() throws Exception {
+        super.stop();
     }
 
     public static void main(String[] args) {
