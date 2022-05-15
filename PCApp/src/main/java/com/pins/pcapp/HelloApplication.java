@@ -13,7 +13,7 @@ import java.io.InputStream;
 public class HelloApplication extends Application {
 
     private String token;
-    public static String serverUrl = "88.200.36.249";
+    public static String serverUrl = "192.168.137.178";
     ServerController serverController;
     @Override
     public void start(Stage stage) throws IOException {

@@ -1,7 +1,9 @@
 package com.pins.pcapp;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXMLLoader;
@@ -32,7 +34,7 @@ public class SwitchUser {
     public PasswordField passwordField;
     public TextField usernameField;
     public String serverUrl = HelloApplication.serverUrl;
-    public static Pattern p = Pattern.compile("88.200.\\d*.\\d*");
+    public static Pattern p = Pattern.compile("192.168.\\d*.\\d*");
 
     public static String getIp() {
 
@@ -40,13 +42,16 @@ public class SwitchUser {
             Enumeration e = NetworkInterface.getNetworkInterfaces();
             while (e.hasMoreElements()) {
                 NetworkInterface n = (NetworkInterface) e.nextElement();
-                Enumeration ee = n.getInetAddresses();
-                while (ee.hasMoreElements()) {
-                    InetAddress i = (InetAddress) ee.nextElement();
-                    if (p.matcher(i.toString().substring(1)).find()) {
-                        return i.toString();
+                System.out.println(n.getName());
+                if (n.getName().contains("wlp")) {
+                    Enumeration ee = n.getInetAddresses();
+                    while (ee.hasMoreElements()) {
+                        InetAddress i = (InetAddress) ee.nextElement();
+
+                        if (p.matcher(i.toString().substring(1)).find()) {
+                            return i.toString().substring(1);
+                        }
                     }
-                    System.out.println(i.getHostAddress());
                 }
             }
         } catch (Exception e) {
@@ -65,9 +70,10 @@ public class SwitchUser {
             String token = getTokenFromRawResponse(rawResponse);
 
             JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("id", 0);
+            jsonObject.addProperty("id", (String) null);
             jsonObject.addProperty("name", "Desktop computer");
             jsonObject.addProperty("type", "computer");
+            jsonObject.addProperty("network_ssid", "test");
             jsonObject.addProperty("ip", getIp());
             jsonObject.addProperty("id_user", 2);
 
@@ -76,8 +82,10 @@ public class SwitchUser {
                     jsonObject.toString(),
                     ContentType.APPLICATION_JSON);
 
-            HttpPost postMethod = new HttpPost("http://" + serverUrl + ":5000/v1/device");
+            HttpPost postMethod = new HttpPost("http://" + serverUrl + ":5000/v1/device/0");
             postMethod.setEntity(requestEntity);
+            System.out.println(token);
+
             try {
                 HttpResponse resp = httpclient.execute(postMethod);
             } catch (Exception e) {

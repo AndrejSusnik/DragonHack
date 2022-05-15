@@ -19,17 +19,17 @@ import java.util.regex.Pattern;
 import java.io.IOException;
 
 import javafx.stage.Stage;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.HttpClientBuilder;
 
 public class HelloController {
     public FlowPane devicesFlowPane;
-    private static Pattern p = Pattern.compile("\\d*.\\d*.\\d*.\\d]");
+    private static Pattern p = Pattern.compile("\\d*.\\d*.\\d*.\\d*]");
 
     @FXML
     public void initialize() {
-        final String serverURL = "88.200.89.111";
-        HttpPost getRequest = new HttpPost("http://" + serverURL + ":5000/v1/device_list");
-
         addDeviceIcon("Device 1", "phone");
         addDeviceIcon("Device 2", "pc");
         addDeviceIcon("Device 3", "phone");

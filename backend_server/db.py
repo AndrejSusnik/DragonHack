@@ -3,7 +3,7 @@ from sqlalchemy import Column, String, INTEGER, DATE, BINARY
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship, registry
 
-db_string = "sqlite:///test.db"
+db_string = "sqlite:///test.db?check_same_thread=False"
 
 db = create_engine(db_string)
 base: registry = declarative_base()

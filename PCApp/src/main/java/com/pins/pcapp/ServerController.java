@@ -1,5 +1,6 @@
 package com.pins.pcapp;
 
+import com.google.gson.JsonObject;
 import io.javalin.Javalin;
 import io.javalin.http.UploadedFile;
 import org.apache.commons.io.FileUtils;
@@ -15,13 +16,19 @@ public class ServerController {
        app = Javalin.create().start("0.0.0.0",port);
        app._conf.enableCorsForAllOrigins();
         app.get("/", ctx -> ctx.result("Hello World"));
-        app.get("/discovery", ctx -> ctx.result("{'type': 'computer'}"));
+        JsonObject obj = new JsonObject();
+        obj.addProperty("type", "computer");
+        obj.addProperty("name", "test");
+
+        app.get("/discovery", ctx -> ctx.result("test"));
         app.post("/file", ctx -> {
             List<UploadedFile> l =  ctx.uploadedFiles();
             for(UploadedFile f: l) {
                 try (InputStream inputStream = f.getContent()) {
-                    File localFile = new File("~/Desktop/"+f.getFilename());
+                    File localFile = new File("./assets/"+f.getFilename());
                     FileUtils.copyInputStreamToFile(inputStream, localFile);
+                }catch (Exception e) {
+                    System.out.println(e.toString());
                 }
             }
         });

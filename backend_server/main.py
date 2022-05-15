@@ -33,11 +33,9 @@ class Device(Resource):
     def get(self, id):
         pass
 
-    @jwt_required()
     def post(self, id):
         try:
             args = deviceParser.parse_args()
-            print(args) 
             device = db.Device(name=args["name"], type=args["type"], network_ssid=args["network_ssid"], ip=args["ip"], id_user=args["id_user"])
             db.session.add(device)
             db.session.commit()
@@ -61,7 +59,10 @@ class Device(Resource):
 class DeviceList(Resource):
     @jwt_required()
     def get(self, id):
-        return {"devices":list(map(lambda x: x.as_dict(), db.session.query(db.Device).filter(db.Device.id_user == get_jwt_identity()["id"]).filter(db.Device.id != id).all()))}, 200
+        print(get_jwt_identity()["id"])
+        resp = {"devices":list(map(lambda x: x.as_dict(), db.session.query(db.Device).filter(db.Device.id_user == get_jwt_identity()["id"]).filter(db.Device.id != id).all()))}
+        print(resp)
+        return resp, 200
 
 authParser = reqparse.RequestParser()
 authParser.add_argument("password", required=True)
@@ -80,9 +81,7 @@ class Auth(Resource):
             key = hashlib.pbkdf2_hmac('sha256', args["password"].encode(
                 "utf-8"), user.salt.encode("utf-8"), 100000).hex()
             if key == user.password:
-                print(user.as_dict())
                 token =  create_access_token(identity=user.as_dict(), expires_delta=False)
-                print(token)
                 return {"token": token, "user": user.as_dict()}, 200
             else:
                 return {"error": "Incorrect username or password"}, 342
