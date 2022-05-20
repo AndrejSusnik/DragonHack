@@ -173,13 +173,26 @@ class _HomeState extends State<Home> {
                                   return buildDeviceGrid();
                                 }
                               })),
-                      RaisedButton(
-                        onPressed: () {
-                          _pickFile();
-                        },
-                        child: Text(!fileSelected
-                            ? "Pick a File"
-                            : selectedFile.files[0].name + " selected"),
+                      Container(
+                        width: MediaQuery.of(context).size.width + 200,
+                        margin: EdgeInsets.only(bottom: 20),
+                        decoration: BoxDecoration(
+                          color: Colors.blue,
+                        ),
+                        child: RaisedButton(
+                          color: Colors.blue,
+                          onPressed: () {
+                            _pickFile();
+                          },
+                          child: Text(
+                            !fileSelected
+                                ? "Pick a File"
+                                : selectedFile.files[0].name + " selected",
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
                       ),
                     ])))));
   }
@@ -219,7 +232,7 @@ class _HomeState extends State<Home> {
         print("ANDREJ?: " + device["ip"]);
         var discovery = await discover(device["ip"]);
         print("DISCOVERY: " + discovery.toString());
-        if (true) {
+        if (discovery.successful()) {
           print(device);
           devices.add(Device()
             ..name = device["name"]

@@ -10,7 +10,9 @@ final storage = FlutterSecureStorage();
 
 Future<Response> discover(String ip) async {
   print("IP: " + "http://$ip:9999/discovery");
-  var res = await http.get(Uri.parse("http://$ip:9999/discovery"));
+  var res = await http.get(Uri.parse("http://$ip:9999/discovery")).timeout(
+      Duration(milliseconds: 5000),
+      onTimeout: () => http.Response(json.encode({"Error": "Timeout"}), 400));
   return Response(res.statusCode, {"body": res.body});
 }
 
@@ -28,4 +30,5 @@ Future<Response> sendFile(String ip, String path) async {
 
 receiveFile(HttpRequest request) async {
   var file = await request.connectionInfo;
+  
 }

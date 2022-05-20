@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
-final String serverUrl = "http://192.168.137.178:5000/v1";
+const String serverUrl = "https://api.dragondrop.online/v1";
 
 final storage = FlutterSecureStorage();
 
@@ -37,6 +37,7 @@ Future<Response> login(String username, String password) async {
   var res = await http.post(Uri.parse("$serverUrl/auth"),
       body: jsonEncode({"username": username, "password": password}),
       headers: {"Content-Type": "application/json"});
+  print(res.body);
   return Response(res.statusCode, json.decode(res.body));
 }
 
